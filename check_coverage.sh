@@ -21,6 +21,7 @@ function check_coverage ()
             opts+=(-j1)
         fi
 
+        ici_exec_in_workspace "$extend" "$ws" catkin config --cmake-args -DENABLE_COVERAGE_TESTING=ON -DCMAKE_BUILD_TYPE=Debug
         ici_exec_in_workspace "$extend" "$ws" catkin build $pkg -v --no-deps --catkin-make-args tests
         ici_exec_in_workspace "$extend" "$ws" catkin build $pkg -v "${opts[@]}" --no-deps --catkin-make-args ${pkg}_coverage
 
