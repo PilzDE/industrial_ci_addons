@@ -17,7 +17,7 @@ function check_coverage ()
         extend="/opt/ros/$ROS_DISTRO"
 
         local -a opts
-        if [ "${PARALLEL_TESTS:=true}" != true ]; then
+        if [ $SEQUENTIAL_TESTS == true ]; then
             opts+=(-j1)
         fi
 
