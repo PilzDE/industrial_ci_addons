@@ -3,8 +3,11 @@
 
 function check_coverage ()
 {
+    ICI_ADDONS_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
     source "${ICI_SRC_PATH}/workspace.sh"
     source "${ICI_SRC_PATH}/util.sh"
+    source "${ICI_ADDONS_PATH}/${BUILDER}.sh"
 
     echo "Checking coverage for [$*]"
 
@@ -16,14 +19,7 @@ function check_coverage ()
         ws=~/target_ws
         extend="/opt/ros/$ROS_DISTRO"
 
-        local -a opts
-        if [ "$PARALLEL_TESTS" != true ]; then
-            opts+=(-j1)
-        fi
-
-        ici_exec_in_workspace "$extend" "$ws" catkin config --cmake-args -DENABLE_COVERAGE_TESTING=ON -DCMAKE_BUILD_TYPE=Debug
-        ici_exec_in_workspace "$extend" "$ws" catkin build $pkg -v --no-deps --catkin-make-args tests
-        ici_exec_in_workspace "$extend" "$ws" catkin build $pkg -v "${opts[@]}" --no-deps --catkin-make-args ${pkg}_coverage
+        run_coverage_build "$extend" "$ws" "$pkg"
 
         if [ -a $ws/build/$pkg/${pkg}_coverage.info.cleaned ]; then
             echo "Coverage summary for $pkg ----------------------"
