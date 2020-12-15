@@ -31,7 +31,6 @@ function check_coverage ()
             echo "---------------------------------------------------"
 
             line_cov_percentage=$(lcov --summary $ws/build/$pkg/${pkg}_coverage.info.cleaned 2>&1 | grep -Poi "lines\.*: \K[0-9.]*")
-
             required_coverage="100.0"
         else
             cd $HOME/.ros
@@ -66,5 +65,4 @@ function check_coverage ()
     exit 1;
     fi
 }
-
 
