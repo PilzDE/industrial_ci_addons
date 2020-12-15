@@ -25,13 +25,13 @@ function check_coverage ()
             echo "Coverage summary for $pkg ----------------------"
             lcov --summary $ws/build/$pkg/${pkg}_coverage.info.cleaned
 
+            line_cov_percentage=$(lcov --summary $ws/build/$pkg/${pkg}_coverage.info.cleaned 2>&1 | grep -Poi "lines\.*: \K[0-9.]*")
+            required_coverage="100.0"
+
             if [ "$line_cov_percentage" != "$required_coverage" ]; then
                 grep -R "^SF.*\|.*,0" $ws/build/$pkg/${pkg}_coverage.info.cleaned | sed -r "s/SF://g" | sed -r "s/DA:/missing line /g" | sed -r "s/,0//g"
             fi 
             echo "---------------------------------------------------"
-
-            line_cov_percentage=$(lcov --summary $ws/build/$pkg/${pkg}_coverage.info.cleaned 2>&1 | grep -Poi "lines\.*: \K[0-9.]*")
-            required_coverage="100.0"
         else
             cd $HOME/.ros
             echo "Coverage summary for $pkg"
@@ -62,7 +62,6 @@ function check_coverage ()
     fi
 
     if ! $coverage_pass; then
-    exit 1;
+        exit 1;
     fi
 }
-
