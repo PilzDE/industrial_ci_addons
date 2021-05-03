@@ -5,6 +5,12 @@ function check_coverage ()
 {
     ICI_ADDONS_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+    if [ "$ROS_DISTRO" = "noetic" ]; then
+        PYTHON_COVERAGE_CMD="python3-coverage"
+    else
+        PYTHON_COVERAGE_CMD="python-coverage"
+    fi
+
     source "${ICI_SRC_PATH}/workspace.sh"
     source "${ICI_SRC_PATH}/util.sh"
     source "${ICI_ADDONS_PATH}/${BUILDER}.sh"
@@ -30,14 +36,14 @@ function check_coverage ()
 
             if [ "$line_cov_percentage" != "$required_coverage" ]; then
                 grep -R "^SF.*\|.*,0" $ws/build/$pkg/${pkg}_coverage.info.cleaned | sed -r "s/SF://g" | sed -r "s/DA:/missing line /g" | sed -r "s/,0//g"
-            fi 
+            fi
             echo "---------------------------------------------------"
         else
             cd $HOME/.ros
             echo "Coverage summary for $pkg"
-            python-coverage report --include "$ws/src/$TARGET_REPO_NAME/$pkg/*" --omit "*/$pkg/test/*"
+            $PYTHON_COVERAGE_CMD report --include "$ws/src/$TARGET_REPO_NAME/$pkg/*" --omit "*/$pkg/test/*"
 
-            line_cov_percentage=$(python-coverage report --include "$ws/src/$TARGET_REPO_NAME/$pkg/*" --omit "*/$pkg/test/*" | grep -Poi "TOTAL.* ([0-9]*){2} \K[0-9]*")
+            line_cov_percentage=$($PYTHON_COVERAGE_CMD report --include "$ws/src/$TARGET_REPO_NAME/$pkg/*" --omit "*/$pkg/test/*" | grep -Poi "TOTAL.* ([0-9]*){2} \K[0-9]*")
             required_coverage="100"
         fi
 
