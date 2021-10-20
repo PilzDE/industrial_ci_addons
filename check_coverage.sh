@@ -22,7 +22,7 @@ function check_coverage ()
     for pkg in "$@"; do
         echo "Creating coverage for [$pkg]"
 
-        ws=~/target_ws
+        ws=$BASEDIR/target_ws
         extend="/opt/ros/$ROS_DISTRO"
 
         run_coverage_build "$extend" "$ws" "$pkg"
